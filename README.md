@@ -1,13 +1,48 @@
-# astrbot-plugin-helloworld
+# astrbot_plugin_chat_tool_balance
 
-AstrBot 插件模板 / A template plugin for AstrBot plugin feature
+Chat Tool Balance is an AstrBot plugin MVP that keeps tool-first behavior while preserving topic-aware short-term memory and long-term summary sync.
 
-> [!NOTE]
-> This repo is just a template of [AstrBot](https://github.com/AstrBotDevs/AstrBot) Plugin.
-> 
-> [AstrBot](https://github.com/AstrBotDevs/AstrBot) is an agentic assistant for both personal and group conversations. It can be deployed across dozens of mainstream instant messaging platforms, including QQ, Telegram, Feishu, DingTalk, Slack, LINE, Discord, Matrix, etc. In addition, it provides a reliable and extensible conversational AI infrastructure for individuals, developers, and teams. Whether you need a personal AI companion, an intelligent customer support agent, an automation assistant, or an enterprise knowledge base, AstrBot enables you to quickly build AI applications directly within your existing messaging workflows.
+## Features
 
-# Supports
+- Tool-first orchestration with chat fallback.
+- Image OCR stage with permanent description cache.
+- Topic routing with single-message single-topic guarantee.
+- Bucketed short-memory persistence and context window builder.
+- Hybrid summary trigger (message count + silence time).
+- LivingMemory v2 bridge with pending-sync retry.
+
+## Configuration
+
+Core config is defined in `_conf_schema.json`:
+
+- `models.chat_default`
+- `models.ocr`
+- `models.topic_classifier`
+- `models.tool_intent_classifier`
+- `models.summary`
+- `summary.enabled`
+- `summary.trigger_non_bot_count`
+- `summary.trigger_silence_minutes`
+- `storage.base_dir`
+- `storage.bucket_count`
+
+## Data Storage
+
+Default base path:
+
+`/data/plugin_data/astrbot_plugin_chat_tool_balance`
+
+Storage is split into 10 buckets for short memory and image cache.
+
+## Development
+
+Run tests:
+
+```bash
+pytest -q
+```
+
+## References
 
 - [AstrBot Repo](https://github.com/AstrBotDevs/AstrBot)
 - [AstrBot Plugin Development Docs (Chinese)](https://docs.astrbot.app/dev/star/plugin-new.html)
