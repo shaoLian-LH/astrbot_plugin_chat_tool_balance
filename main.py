@@ -20,8 +20,9 @@ ORCHESTRATOR_EVENT_TIMEOUT_SECONDS = 20.0
 
 @register("chat_tool_balance", "shaoLian-LH", "平衡聊天与工具调用插件", "v0.4.1")
 class ChatToolBalancePlugin(Star):
-    def __init__(self, context: Context):
+    def __init__(self, context: Context, config=None):
         super().__init__(context)
+        self.config = config
         self.settings: PluginSettings = load_plugin_settings({})
         self.storage_bootstrap: StorageBootstrapResult | None = None
         self.orchestrator: ChatToolBalanceOrchestrator | None = None

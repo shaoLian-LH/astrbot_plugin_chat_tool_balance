@@ -35,13 +35,11 @@ def test_gateway_feature_toggle_string_bool_and_invalid_fallback_success():
 
 def test_gateway_conf_schema_provider_selector_and_feature_default_success():
     schema = json.loads(Path("_conf_schema.json").read_text(encoding="utf-8"))
-    properties = schema["properties"]
-
-    feature_schema = properties["features"]["properties"]["use_responses_api"]
-    assert feature_schema["type"] == "boolean"
+    feature_schema = schema["features"]["items"]["use_responses_api"]
+    assert feature_schema["type"] == "bool"
     assert feature_schema["default"] is True
 
-    model_properties = properties["models"]["properties"]
+    model_properties = schema["models"]["items"]
     for field_name in (
         "chat_default",
         "ocr",

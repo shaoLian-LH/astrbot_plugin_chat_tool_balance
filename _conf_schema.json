@@ -1,104 +1,111 @@
 {
-  "type": "object",
-  "properties": {
-    "models": {
-      "type": "object",
-      "properties": {
-        "chat_default": {
-          "type": "string",
-          "default": "",
-          "_special": "select_provider"
-        },
-        "ocr": {
-          "type": "string",
-          "default": "",
-          "_special": "select_provider"
-        },
-        "topic_classifier": {
-          "type": "string",
-          "default": "",
-          "_special": "select_provider"
-        },
-        "tool_intent_classifier": {
-          "type": "string",
-          "default": "",
-          "_special": "select_provider"
-        },
-        "summary": {
-          "type": "string",
-          "default": "",
-          "_special": "select_provider"
-        },
-        "chat_model": {
-          "type": "string",
-          "default": ""
-        },
-        "ocr_model": {
-          "type": "string",
-          "default": ""
-        },
-        "topic_classifier_model": {
-          "type": "string",
-          "default": ""
-        },
-        "tool_intent_classifier_model": {
-          "type": "string",
-          "default": ""
-        },
-        "summary_model": {
-          "type": "string",
-          "default": ""
-        }
+  "models": {
+    "type": "object",
+    "description": "模型与 Provider 配置",
+    "items": {
+      "chat_default": {
+        "type": "string",
+        "description": "聊天默认 Provider ID",
+        "default": "",
+        "_special": "select_provider"
       },
-      "default": {}
-    },
-    "features": {
-      "type": "object",
-      "properties": {
-        "use_responses_api": {
-          "type": "boolean",
-          "default": true
-        }
+      "ocr": {
+        "type": "string",
+        "description": "OCR Provider ID",
+        "default": "",
+        "_special": "select_provider"
       },
-      "default": {}
-    },
-    "summary": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "default": true
-        },
-        "trigger_non_bot_count": {
-          "type": "integer",
-          "default": 20,
-          "minimum": 1
-        },
-        "trigger_silence_minutes": {
-          "type": "integer",
-          "default": 60,
-          "minimum": 1
-        }
+      "topic_classifier": {
+        "type": "string",
+        "description": "主题分类 Provider ID",
+        "default": "",
+        "_special": "select_provider"
       },
-      "default": {}
-    },
-    "storage": {
-      "type": "object",
-      "properties": {
-        "base_dir": {
-          "type": "string",
-          "default": "/data/plugin_data/astrbot_plugin_chat_tool_balance"
-        },
-        "bucket_count": {
-          "type": "integer",
-          "default": 10,
-          "enum": [
-            10
-          ]
-        }
+      "tool_intent_classifier": {
+        "type": "string",
+        "description": "工具意图分类 Provider ID",
+        "default": "",
+        "_special": "select_provider"
       },
-      "default": {}
+      "summary": {
+        "type": "string",
+        "description": "总结 Provider ID",
+        "default": "",
+        "_special": "select_provider"
+      },
+      "chat_model": {
+        "type": "string",
+        "description": "聊天模型名（可选）",
+        "default": ""
+      },
+      "ocr_model": {
+        "type": "string",
+        "description": "OCR 模型名（可选）",
+        "default": ""
+      },
+      "topic_classifier_model": {
+        "type": "string",
+        "description": "主题分类模型名（可选）",
+        "default": ""
+      },
+      "tool_intent_classifier_model": {
+        "type": "string",
+        "description": "工具意图分类模型名（可选）",
+        "default": ""
+      },
+      "summary_model": {
+        "type": "string",
+        "description": "总结模型名（可选）",
+        "default": ""
+      }
     }
   },
-  "default": {}
+  "features": {
+    "type": "object",
+    "description": "功能开关",
+    "items": {
+      "use_responses_api": {
+        "type": "bool",
+        "description": "是否优先使用 Responses API",
+        "default": true
+      }
+    }
+  },
+  "summary": {
+    "type": "object",
+    "description": "总结任务配置",
+    "items": {
+      "enabled": {
+        "type": "bool",
+        "description": "是否启用总结任务",
+        "default": true
+      },
+      "trigger_non_bot_count": {
+        "type": "int",
+        "description": "触发总结的最少非机器人消息数",
+        "default": 20
+      },
+      "trigger_silence_minutes": {
+        "type": "int",
+        "description": "触发总结的静默分钟数",
+        "default": 60
+      }
+    }
+  },
+  "storage": {
+    "type": "object",
+    "description": "存储配置",
+    "items": {
+      "base_dir": {
+        "type": "string",
+        "description": "插件数据目录（绝对路径）",
+        "default": "/data/plugin_data/astrbot_plugin_chat_tool_balance"
+      },
+      "bucket_count": {
+        "type": "int",
+        "description": "分桶数量（当前固定 10）",
+        "default": 10
+      }
+    }
+  }
 }
