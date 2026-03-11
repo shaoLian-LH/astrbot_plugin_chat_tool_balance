@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.0] - 2026-03-11
+
+### Fixed
+
+- 修复插件加载时顶层 `bridge` 包解析失败导致的 `No module named 'bridge'` 报错。
+
+### Changed
+
+- 将 LivingMemory v2 bridge 实现迁移到 `handlers/bridge/`，并同步更新运行时代码与测试引用路径。
+- 移除旧 `bridge/` 目录，统一桥接实现入口为 `handlers.bridge`。
+
 ## [0.3.0] - 2026-03-11
 
 ### Added

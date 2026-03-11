@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Protocol
 
-from bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
+from handlers.bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
 from pipeline.contracts import ShortMemoryRecord
 from storage.path_manager import StoragePathManager
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import sqlite3
 from datetime import datetime, timedelta, timezone
 
-from bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
+from handlers.bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
 from pipeline.contracts import NormalizedEvent, TopicAssignment
 from pipeline.stage_short_memory import ShortMemoryStage
 from scheduler.summary_executor import SummaryExecutor

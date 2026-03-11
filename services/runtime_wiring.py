@@ -11,7 +11,7 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - fallback for local unit tests.
     logger = logging.getLogger(__name__)
 
-from bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
+from handlers.bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
 from pipeline.contracts import NormalizedEvent, ShortMemoryRecord
 from pipeline.orchestrator import ChatToolBalanceOrchestrator
 from plugin_config import ModelSettings, PluginSettings, load_plugin_settings

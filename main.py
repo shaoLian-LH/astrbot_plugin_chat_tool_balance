@@ -7,8 +7,8 @@ from astrbot.api import logger
 from astrbot.api.event import AstrMessageEvent, filter
 from astrbot.api.star import Context, Star, register
 
-from bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
 from handlers.event_normalizer import is_status_command_message, normalize_event
+from handlers.bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
 from pipeline.orchestrator import ChatToolBalanceOrchestrator
 from plugin_config import PluginSettings, load_plugin_settings
 from scheduler.summary_executor import SummaryExecutor
@@ -18,8 +18,7 @@ from storage.bootstrap import StorageBootstrapResult
 
 ORCHESTRATOR_EVENT_TIMEOUT_SECONDS = 20.0
 
-
-@register("chat_tool_balance", "shaoLian-LH", "平衡聊天与工具调用插件", "v0.3.0")
+@register("chat_tool_balance", "shaoLian-LH", "平衡聊天与工具调用插件", "v0.4.0")
 class ChatToolBalancePlugin(Star):
     def __init__(self, context: Context):
         super().__init__(context)

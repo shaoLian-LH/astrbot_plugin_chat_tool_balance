@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sqlite3
 
-from bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
+from handlers.bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
 from pipeline.contracts import NormalizedEvent
 from pipeline.orchestrator import ChatToolBalanceOrchestrator
 from plugin_config import load_plugin_settings
