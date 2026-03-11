@@ -41,6 +41,9 @@ class StoragePathManager:
     def core_db_path(self) -> Path:
         return self.base_dir / "core" / "core_state.db"
 
+    def response_state_db_path(self) -> Path:
+        return self.base_dir / "core" / "response_state.db"
+
     def summary_jobs_db_path(self) -> Path:
         return self.base_dir / "summary" / "summary_jobs.db"
 
@@ -57,4 +60,3 @@ class StoragePathManager:
     def image_cache_bucket_path(self, bucket_index: int) -> Path:
         bucket_index = bucket_index % self.bucket_count
         return self.base_dir / "image" / f"cache_{bucket_index:02d}.db"
-

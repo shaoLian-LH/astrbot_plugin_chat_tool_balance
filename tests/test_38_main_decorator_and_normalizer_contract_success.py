@@ -18,6 +18,9 @@ class _FakeContext:
             return self.livingmemory_client
         return None
 
+    async def llm_generate(self, **_kwargs):
+        return "contract-llm"
+
 
 class _FakeMessageEvent:
     def __init__(self) -> None:
@@ -80,9 +83,11 @@ class _StatusMessageEvent:
 class _CaptureOrchestrator:
     def __init__(self) -> None:
         self.events = []
+        self.event_contexts = []
 
-    def handle_event(self, event):
+    def handle_event(self, event, event_context=None):
         self.events.append(event)
+        self.event_contexts.append(event_context)
         return SimpleNamespace(reply_text="contract-ok")
 
 
@@ -169,6 +174,7 @@ def test_main_ctb_status_and_normalized_fields_contract_success(tmp_path, monkey
     context = _FakeContext(
         config={
             "models": {"chat_default": "chat-default-model"},
+            "features": {"use_responses_api": False},
             "summary": {"enabled": False},
             "storage": {"base_dir": str(tmp_path / "plugin_data")},
         }
@@ -207,6 +213,7 @@ def test_main_ctb_status_and_normalized_fields_contract_success(tmp_path, monkey
     assert normalized_event.metadata["group_id"] == "g-contract"
     assert normalized_event.metadata["platform"] == "qq"
     assert normalized_event.metadata["unified_msg_origin"] == "origin-contract"
+    assert capture_orchestrator.event_contexts[0].message_id == "msg-contract-1"
 
     status_message_outputs = asyncio.run(_collect_async(plugin.on_event_message(_StatusMessageEvent("/ctb_status"))))
     assert status_message_outputs == []

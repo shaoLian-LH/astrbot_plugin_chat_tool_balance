@@ -19,3 +19,4 @@ def test_path_init_success(tmp_path):
         assert target.exists()
         assert target.is_dir()
 
+    assert path_manager.response_state_db_path() == base_dir / "core" / "response_state.db"

@@ -61,20 +61,22 @@ class ImageOCRStage:
                 cache_hit=False,
                 status="ocr_failed",
             )
+        normalized_description = str(description or "").strip() or "image description unavailable"
+        normalized_metadata = metadata if isinstance(metadata, dict) else {}
 
         self._write_cache(
             db_path=db_path,
             content_hash=content_hash,
             source_url_hash=source_url_hash,
-            description=description,
-            metadata=metadata,
+            description=normalized_description,
+            metadata=normalized_metadata,
         )
         return ImageFacts(
             source_url=source_url,
             content_hash=content_hash,
             source_url_hash=source_url_hash,
-            description=description,
-            metadata=metadata,
+            description=normalized_description,
+            metadata=normalized_metadata,
             cache_hit=False,
             status="generated",
         )

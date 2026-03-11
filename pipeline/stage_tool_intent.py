@@ -4,7 +4,9 @@ from collections.abc import Callable
 
 from pipeline.contracts import ImageFacts, NormalizedEvent, ToolIntentDecision
 
-ToolIntentClassifier = Callable[[str, str], tuple[float, str]]
+ToolIntentClassifier = Callable[[str, str, NormalizedEvent], tuple[float, str]] | Callable[
+    [str, str], tuple[float, str]
+]
 
 
 class ToolIntentStage:
@@ -28,7 +30,7 @@ class ToolIntentStage:
         image_facts: tuple[ImageFacts, ...] = (),
     ) -> ToolIntentDecision:
         payload = event.intent_payload(image_facts)
-        confidence, reason_code = self._predict(payload)
+        confidence, reason_code = self._predict(payload, event)
         route = "tool" if confidence >= self.threshold else "chat"
         prompt_injection = self.minimal_prompt if route == "tool" else ""
         return ToolIntentDecision(
@@ -39,10 +41,18 @@ class ToolIntentStage:
             prompt_injection=prompt_injection,
         )
 
-    def _predict(self, payload: str) -> tuple[float, str]:
+    def _predict(self, payload: str, event: NormalizedEvent) -> tuple[float, str]:
         if self.classifier is not None:
             try:
-                score, reason = self.classifier(payload, self.model_name)
+                score, reason = self.classifier(payload, self.model_name, event)
+                return self._clamp(score), reason or "classifier_result"
+            except TypeError:
+                try:
+                    legacy_classifier = self.classifier
+                    score, reason = legacy_classifier(payload, self.model_name)  # type: ignore[misc]
+                except Exception:
+                    score, _ = self._heuristic_predict(payload)
+                    return score, "model_error_fallback"
                 return self._clamp(score), reason or "classifier_result"
             except Exception:
                 score, _ = self._heuristic_predict(payload)

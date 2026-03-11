@@ -6,23 +6,58 @@
       "properties": {
         "chat_default": {
           "type": "string",
-          "default": ""
+          "default": "",
+          "_special": "select_provider"
         },
         "ocr": {
           "type": "string",
-          "default": ""
+          "default": "",
+          "_special": "select_provider"
         },
         "topic_classifier": {
           "type": "string",
-          "default": ""
+          "default": "",
+          "_special": "select_provider"
         },
         "tool_intent_classifier": {
           "type": "string",
-          "default": ""
+          "default": "",
+          "_special": "select_provider"
         },
         "summary": {
           "type": "string",
+          "default": "",
+          "_special": "select_provider"
+        },
+        "chat_model": {
+          "type": "string",
           "default": ""
+        },
+        "ocr_model": {
+          "type": "string",
+          "default": ""
+        },
+        "topic_classifier_model": {
+          "type": "string",
+          "default": ""
+        },
+        "tool_intent_classifier_model": {
+          "type": "string",
+          "default": ""
+        },
+        "summary_model": {
+          "type": "string",
+          "default": ""
+        }
+      },
+      "default": {}
+    },
+    "features": {
+      "type": "object",
+      "properties": {
+        "use_responses_api": {
+          "type": "boolean",
+          "default": true
         }
       },
       "default": {}

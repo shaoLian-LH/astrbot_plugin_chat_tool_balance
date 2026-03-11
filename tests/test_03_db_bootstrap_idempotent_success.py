@@ -17,13 +17,22 @@ def _primary_key_columns(conn: sqlite3.Connection, table_name: str) -> tuple[str
     return tuple(row[1] for row in pk_rows)
 
 
+def _index_exists(conn: sqlite3.Connection, index_name: str) -> bool:
+    row = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type = 'index' AND name = ?",
+        (index_name,),
+    ).fetchone()
+    return row is not None
+
+
 def test_db_bootstrap_create_schema_success(tmp_path):
     base_dir = str(tmp_path / "plugin_data")
     result = initialize_storage(base_dir=base_dir, bucket_count=10)
     path_manager = result.path_manager
 
-    assert len(result.db_paths) == 22
+    assert len(result.db_paths) == 23
     assert path_manager.core_db_path().exists()
+    assert path_manager.response_state_db_path().exists()
     assert path_manager.summary_jobs_db_path().exists()
 
     with sqlite3.connect(path_manager.core_db_path()) as conn:
@@ -41,6 +50,12 @@ def test_db_bootstrap_create_schema_success(tmp_path):
         assert _table_exists(conn, "summary_jobs")
         assert _table_exists(conn, "summary_results")
         assert _table_exists(conn, "livingmemory_sync_log")
+
+    with sqlite3.connect(path_manager.response_state_db_path()) as conn:
+        assert _table_exists(conn, "schema_version")
+        assert _table_exists(conn, "response_state")
+        assert _primary_key_columns(conn, "response_state") == ("scope_id", "topic_id")
+        assert _index_exists(conn, "idx_response_state_updated_at")
 
     with sqlite3.connect(path_manager.short_memory_bucket_path(0)) as conn:
         assert _table_exists(conn, "schema_version")

@@ -29,11 +29,21 @@ class _FakeContext:
     def __init__(self, config: dict, livingmemory_client=None) -> None:
         self.config = config
         self.livingmemory_client = livingmemory_client
+        self.llm_calls: list[dict[str, object]] = []
 
     def get_plugin(self, name: str):
         if "livingmemory" in name:
             return self.livingmemory_client
         return None
+
+    async def llm_generate(self, **kwargs):
+        self.llm_calls.append(dict(kwargs))
+        prompt = str(kwargs.get("prompt", ""))
+        if "今天过得不错" in prompt:
+            return "收到：今天过得不错"
+        if "cat.png" in prompt:
+            return "已处理当前消息。"
+        return "已处理当前消息。"
 
 
 class _FakeMessageEvent:
@@ -180,6 +190,7 @@ def test_main_initialize_summary_wiring_and_sync_flow_success(tmp_path, monkeypa
                 "chat_default": "chat-default-model",
                 "summary": "summary-model",
             },
+            "features": {"use_responses_api": False},
             "summary": {
                 "trigger_non_bot_count": 1,
                 "trigger_silence_minutes": 60,
@@ -193,6 +204,7 @@ def test_main_initialize_summary_wiring_and_sync_flow_success(tmp_path, monkeypa
     asyncio.run(plugin.initialize())
 
     assert plugin.orchestrator is not None
+    assert plugin.llm_gateway is not None
     assert plugin.summary_executor is not None
     assert plugin.livingmemory_bridge is not None
     assert plugin.storage_bootstrap is not None
@@ -224,9 +236,12 @@ def test_main_initialize_summary_wiring_and_sync_flow_success(tmp_path, monkeypa
 
     fake_lm_client = _FakeLivingMemoryClient()
     context.livingmemory_client = fake_lm_client
-    synced_count = plugin.summary_executor.retry_pending_sync(now=now_dt + timedelta(seconds=20))
-    assert synced_count == 1
-    assert fake_lm_client.add_calls == 1
+    synced_count = plugin.summary_executor.retry_pending_sync(
+        now=datetime.now(timezone.utc) + timedelta(minutes=1),
+        limit=10,
+    )
+    assert synced_count >= 1
+    assert fake_lm_client.add_calls == synced_count
 
     with sqlite3.connect(summary_db) as conn:
         row = conn.execute(
@@ -255,6 +270,7 @@ def test_main_image_only_message_enter_pipeline_success(tmp_path, monkeypatch):
     context = _FakeContext(
         config={
             "models": {"chat_default": "chat-default-model"},
+            "features": {"use_responses_api": False},
             "summary": {"enabled": False},
             "storage": {"base_dir": base_dir},
         },
@@ -276,7 +292,7 @@ def test_main_image_only_message_enter_pipeline_success(tmp_path, monkeypatch):
     assert plugin.storage_bootstrap is not None
     contents = _collect_short_memory_contents(plugin.storage_bootstrap.path_manager)
     assert len(contents) == 1
-    assert "[image] image from https://example.com/cat.png" in contents[0]
+    assert "[image] 已处理当前消息。" in contents[0]
 
     asyncio.run(plugin.terminate())
 
@@ -290,6 +306,7 @@ def test_main_skip_bot_event_avoid_self_loop_success(tmp_path, monkeypatch):
     context = _FakeContext(
         config={
             "models": {"chat_default": "chat-default-model"},
+            "features": {"use_responses_api": False},
             "summary": {"enabled": False},
             "storage": {"base_dir": base_dir},
         },

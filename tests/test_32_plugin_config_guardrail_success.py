@@ -15,6 +15,11 @@ def test_plugin_config_invalid_values_fallback_success():
                 "topic_classifier": "",
                 "tool_intent_classifier": 123,
                 "summary": " ",
+                "chat_model": " gpt-4.1 ",
+                "ocr_model": None,
+                "topic_classifier_model": "",
+                "tool_intent_classifier_model": 123,
+                "summary_model": " ",
             },
             "summary": {
                 "enabled": "maybe",
@@ -33,6 +38,11 @@ def test_plugin_config_invalid_values_fallback_success():
     assert settings.models.topic_classifier == "chat-base"
     assert settings.models.tool_intent_classifier == "chat-base"
     assert settings.models.summary == "chat-base"
+    assert settings.models.chat_model == "gpt-4.1"
+    assert settings.models.ocr_model == "gpt-4.1"
+    assert settings.models.topic_classifier_model == "gpt-4.1"
+    assert settings.models.tool_intent_classifier_model == "gpt-4.1"
+    assert settings.models.summary_model == "gpt-4.1"
 
     assert settings.summary.enabled is True
     assert settings.summary.trigger.trigger_non_bot_count == DEFAULT_NON_BOT_TRIGGER
@@ -51,6 +61,11 @@ def test_plugin_config_string_conversions_success():
                 "topic_classifier": "topic-model",
                 "tool_intent_classifier": "tool-model",
                 "summary": "summary-model",
+                "chat_model": "gpt-4.1-mini",
+                "ocr_model": "gpt-4o-mini",
+                "topic_classifier_model": "gpt-4.1-mini",
+                "tool_intent_classifier_model": "gpt-4.1-mini",
+                "summary_model": "gpt-4.1",
             },
             "summary": {
                 "enabled": "off",
@@ -69,6 +84,11 @@ def test_plugin_config_string_conversions_success():
     assert settings.models.topic_classifier == "topic-model"
     assert settings.models.tool_intent_classifier == "tool-model"
     assert settings.models.summary == "summary-model"
+    assert settings.models.chat_model == "gpt-4.1-mini"
+    assert settings.models.ocr_model == "gpt-4o-mini"
+    assert settings.models.topic_classifier_model == "gpt-4.1-mini"
+    assert settings.models.tool_intent_classifier_model == "gpt-4.1-mini"
+    assert settings.models.summary_model == "gpt-4.1"
 
     assert settings.summary.enabled is False
     assert settings.summary.trigger.trigger_non_bot_count == 5

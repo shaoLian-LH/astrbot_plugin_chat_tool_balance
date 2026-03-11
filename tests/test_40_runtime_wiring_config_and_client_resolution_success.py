@@ -1,6 +1,11 @@
 from types import SimpleNamespace
 
-from services.runtime_wiring import build_livingmemory_client_getter, extract_raw_plugin_config
+from plugin_config import ModelSettings
+from services.runtime_wiring import (
+    build_gateway_model_name_resolver,
+    build_livingmemory_client_getter,
+    extract_raw_plugin_config,
+)
 
 
 def test_runtime_wiring_extract_raw_plugin_config_prioritize_plugin_mapping_success():
@@ -84,3 +89,22 @@ def test_runtime_wiring_livingmemory_getter_returns_none_when_unavailable_succes
     getter = build_livingmemory_client_getter(_BrokenContext())
 
     assert getter() is None
+
+
+def test_runtime_wiring_gateway_model_name_resolver_fallback_and_override_success():
+    resolver = build_gateway_model_name_resolver(
+        ModelSettings(
+            chat_default="provider-openai",
+            ocr="provider-openai",
+            topic_classifier="provider-openai",
+            tool_intent_classifier="provider-openai",
+            summary="provider-openai",
+            chat_model="gpt-4.1",
+            ocr_model="gpt-4.1-mini",
+        )
+    )
+
+    assert resolver("chat", "provider-openai") == "gpt-4.1"
+    assert resolver("ocr", "provider-openai") == "gpt-4.1-mini"
+    assert resolver("summary", "provider-openai") == "gpt-4.1"
+    assert resolver("unknown_role", "provider-x") == "provider-x"

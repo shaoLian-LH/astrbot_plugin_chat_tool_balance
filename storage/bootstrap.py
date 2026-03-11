@@ -6,7 +6,7 @@ from pathlib import Path
 
 from storage.path_manager import StoragePathManager
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 
 
 @dataclass(frozen=True)
@@ -21,6 +21,7 @@ def initialize_storage(base_dir: str, bucket_count: int) -> StorageBootstrapResu
 
     db_paths = (
         path_manager.core_db_path(),
+        path_manager.response_state_db_path(),
         path_manager.summary_jobs_db_path(),
         *path_manager.short_memory_bucket_paths(),
         *path_manager.image_cache_bucket_paths(),
@@ -40,6 +41,8 @@ def _initialize_database(db_path: Path, path_manager: StoragePathManager) -> Non
 
         if db_path == path_manager.core_db_path():
             _create_core_tables(conn)
+        elif db_path == path_manager.response_state_db_path():
+            _create_response_state_tables(conn)
         elif db_path == path_manager.summary_jobs_db_path():
             _create_summary_tables(conn)
         elif db_path.parent.name == "short_memory":
@@ -52,6 +55,8 @@ def _initialize_database(db_path: Path, path_manager: StoragePathManager) -> Non
 def _component_name(db_path: Path, path_manager: StoragePathManager) -> str:
     if db_path == path_manager.core_db_path():
         return "core_state"
+    if db_path == path_manager.response_state_db_path():
+        return "response_state"
     if db_path == path_manager.summary_jobs_db_path():
         return "summary_jobs"
     if db_path.parent.name == "short_memory":
@@ -205,6 +210,28 @@ def _create_summary_tables(conn: sqlite3.Connection) -> None:
         """
         CREATE UNIQUE INDEX IF NOT EXISTS idx_summary_jobs_dedupe_key
         ON summary_jobs(dedupe_key)
+        """
+    )
+
+
+def _create_response_state_tables(conn: sqlite3.Connection) -> None:
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS response_state (
+            scope_id TEXT NOT NULL,
+            topic_id TEXT NOT NULL,
+            previous_response_id TEXT NOT NULL,
+            provider_id TEXT NOT NULL DEFAULT '',
+            model_name TEXT NOT NULL DEFAULT '',
+            updated_at TEXT NOT NULL,
+            PRIMARY KEY (scope_id, topic_id)
+        )
+        """
+    )
+    conn.execute(
+        """
+        CREATE INDEX IF NOT EXISTS idx_response_state_updated_at
+        ON response_state(updated_at)
         """
     )
 

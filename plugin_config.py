@@ -23,6 +23,11 @@ class ModelSettings:
     topic_classifier: str = ""
     tool_intent_classifier: str = ""
     summary: str = ""
+    chat_model: str = ""
+    ocr_model: str = ""
+    topic_classifier_model: str = ""
+    tool_intent_classifier_model: str = ""
+    summary_model: str = ""
 
 
 @dataclass(frozen=True)
@@ -38,6 +43,11 @@ class SummarySettings:
 
 
 @dataclass(frozen=True)
+class FeatureSettings:
+    use_responses_api: bool = True
+
+
+@dataclass(frozen=True)
 class StorageSettings:
     base_dir: str = DEFAULT_BASE_DIR
     bucket_count: int = DEFAULT_BUCKET_COUNT
@@ -46,6 +56,7 @@ class StorageSettings:
 @dataclass(frozen=True)
 class PluginSettings:
     models: ModelSettings
+    features: FeatureSettings
     summary: SummarySettings
     storage: StorageSettings
 
@@ -53,6 +64,7 @@ class PluginSettings:
 def load_plugin_settings(raw_config: Mapping[str, Any]) -> PluginSettings:
     models_raw = _as_dict(raw_config.get("models"))
     chat_default = _as_string(models_raw.get("chat_default"), "")
+    chat_model = _as_string(models_raw.get("chat_model"), "")
     model_settings = ModelSettings(
         chat_default=chat_default,
         ocr=_model_or_default(models_raw.get("ocr"), chat_default),
@@ -61,6 +73,17 @@ def load_plugin_settings(raw_config: Mapping[str, Any]) -> PluginSettings:
             models_raw.get("tool_intent_classifier"), chat_default
         ),
         summary=_model_or_default(models_raw.get("summary"), chat_default),
+        chat_model=chat_model,
+        ocr_model=_model_or_default(models_raw.get("ocr_model"), chat_model),
+        topic_classifier_model=_model_or_default(
+            models_raw.get("topic_classifier_model"),
+            chat_model,
+        ),
+        tool_intent_classifier_model=_model_or_default(
+            models_raw.get("tool_intent_classifier_model"),
+            chat_model,
+        ),
+        summary_model=_model_or_default(models_raw.get("summary_model"), chat_model),
     )
 
     summary_raw = _as_dict(raw_config.get("summary"))
@@ -78,6 +101,15 @@ def load_plugin_settings(raw_config: Mapping[str, Any]) -> PluginSettings:
     )
     summary_enabled = _as_bool(summary_raw.get("enabled"), True, "summary.enabled")
 
+    features_raw = _as_dict(raw_config.get("features"))
+    feature_settings = FeatureSettings(
+        use_responses_api=_as_bool(
+            features_raw.get("use_responses_api"),
+            True,
+            "features.use_responses_api",
+        )
+    )
+
     storage_raw = _as_dict(raw_config.get("storage"))
     base_dir = _storage_base_dir(storage_raw.get("base_dir"))
     bucket_count = _bucket_count(storage_raw.get("bucket_count"))
@@ -85,6 +117,7 @@ def load_plugin_settings(raw_config: Mapping[str, Any]) -> PluginSettings:
 
     return PluginSettings(
         models=model_settings,
+        features=feature_settings,
         summary=SummarySettings(enabled=summary_enabled, trigger=trigger_settings),
         storage=storage_settings,
     )

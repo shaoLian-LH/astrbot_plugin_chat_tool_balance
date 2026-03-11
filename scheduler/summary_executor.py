@@ -5,12 +5,18 @@ import sqlite3
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from typing import Protocol
 
 from bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
 from pipeline.contracts import ShortMemoryRecord
 from storage.path_manager import StoragePathManager
 
 SummaryGenerator = Callable[[tuple[ShortMemoryRecord, ...], str], tuple[str, float]]
+
+
+class SummaryStateJanitorProtocol(Protocol):
+    def delete_by_scope_topic(self, scope_id: str, topic_id: str) -> int:
+        ...
 
 
 @dataclass(frozen=True)
@@ -31,6 +37,7 @@ class SummaryExecutor:
         summary_model_name: str = "",
         summary_generator: SummaryGenerator | None = None,
         bridge: LivingMemoryV2Bridge | None = None,
+        summary_state_janitor: SummaryStateJanitorProtocol | None = None,
         max_source_messages: int = 20,
         base_retry_seconds: int = 10,
     ) -> None:
@@ -38,6 +45,7 @@ class SummaryExecutor:
         self.summary_model_name = summary_model_name
         self.summary_generator = summary_generator or _default_generate_summary
         self.bridge = bridge
+        self.summary_state_janitor = summary_state_janitor
         self.max_source_messages = max(4, int(max_source_messages))
         self.base_retry_seconds = max(1, int(base_retry_seconds))
 
@@ -153,6 +161,7 @@ class SummaryExecutor:
                     now_iso=now_iso,
                 )
                 conn.commit()
+            self._cleanup_response_state(scope_id=scope_id, topic_id=topic_id)
             return SummaryExecutionResult(
                 job_id=int(job_id),
                 result_id=int(result_id),
@@ -266,6 +275,7 @@ class SummaryExecutor:
                 summary_text=str(summary_text),
                 source_window=source_window_obj if isinstance(source_window_obj, dict) else {},
             )
+            cleanup_after_commit = False
             with sqlite3.connect(self.path_manager.summary_jobs_db_path()) as conn:
                 self._ensure_summary_tables(conn)
                 if sync_ok:
@@ -298,6 +308,7 @@ class SummaryExecutor:
                         now_iso=now_iso,
                     )
                     synced_count += 1
+                    cleanup_after_commit = True
                 else:
                     retry_value = int(retry_count) + 1
                     next_retry_at = self._next_retry_at(now_dt, retry_value)
@@ -331,6 +342,11 @@ class SummaryExecutor:
                         now_iso=now_iso,
                     )
                 conn.commit()
+            if cleanup_after_commit:
+                self._cleanup_response_state(
+                    scope_id=str(scope_id),
+                    topic_id=str(topic_id),
+                )
 
         return synced_count
 
@@ -460,6 +476,17 @@ class SummaryExecutor:
     def _next_retry_at(self, now: datetime, retry_count: int) -> str:
         delay_seconds = self.base_retry_seconds * (2 ** max(0, int(retry_count) - 1))
         return (now + timedelta(seconds=delay_seconds)).isoformat()
+
+    def _cleanup_response_state(self, scope_id: str, topic_id: str) -> None:
+        if self.summary_state_janitor is None:
+            return
+        try:
+            self.summary_state_janitor.delete_by_scope_topic(
+                scope_id=scope_id,
+                topic_id=topic_id,
+            )
+        except Exception:
+            return
 
     @staticmethod
     def _append_sync_log(
