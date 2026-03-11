@@ -5,8 +5,8 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from typing import Any
 
-from services.llm_gateway.async_bridge import AsyncBridgeTimeoutError, run_async_callable_sync
-from services.llm_gateway.contracts import FallbackReasonCode, GatewayResult
+from .async_bridge import AsyncBridgeTimeoutError, run_async_callable_sync
+from .contracts import FallbackReasonCode, GatewayResult
 
 
 @dataclass(frozen=True)

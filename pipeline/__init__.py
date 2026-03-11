@@ -1,6 +1,6 @@
 """Pipeline package for message processing stages."""
 
-from pipeline.contracts import (
+from .contracts import (
     ContextPacket,
     ImageFacts,
     NormalizedEvent,
@@ -9,12 +9,12 @@ from pipeline.contracts import (
     ToolIntentDecision,
     TopicAssignment,
 )
-from pipeline.orchestrator import ChatToolBalanceOrchestrator
-from pipeline.stage_context_builder import ContextBuilderStage
-from pipeline.stage_image_ocr import ImageOCRStage
-from pipeline.stage_short_memory import ShortMemoryStage
-from pipeline.stage_tool_intent import ToolIntentStage
-from pipeline.stage_topic_router import TopicRouterStage
+from .orchestrator import ChatToolBalanceOrchestrator
+from .stage_context_builder import ContextBuilderStage
+from .stage_image_ocr import ImageOCRStage
+from .stage_short_memory import ShortMemoryStage
+from .stage_tool_intent import ToolIntentStage
+from .stage_topic_router import TopicRouterStage
 
 __all__ = [
     "ChatToolBalanceOrchestrator",

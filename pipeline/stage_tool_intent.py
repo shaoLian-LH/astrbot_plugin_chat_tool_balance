@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from pipeline.contracts import ImageFacts, NormalizedEvent, ToolIntentDecision
+from .contracts import ImageFacts, NormalizedEvent, ToolIntentDecision
 
 ToolIntentClassifier = Callable[[str, str, NormalizedEvent], tuple[float, str]] | Callable[
     [str, str], tuple[float, str]

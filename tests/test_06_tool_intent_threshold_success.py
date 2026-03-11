@@ -1,5 +1,5 @@
-from pipeline.contracts import NormalizedEvent
-from pipeline.stage_tool_intent import ToolIntentStage
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent
+from astrbot_plugin_chat_tool_balance.pipeline.stage_tool_intent import ToolIntentStage
 
 
 def test_tool_intent_hit_and_injection_success():

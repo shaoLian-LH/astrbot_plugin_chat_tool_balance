@@ -5,7 +5,7 @@ from collections import defaultdict
 from collections.abc import Mapping
 from dataclasses import dataclass
 
-from services.llm_gateway.contracts import FallbackReasonCode
+from .contracts import FallbackReasonCode
 
 RESPONSES_ATTEMPT_TOTAL = "responses_attempt_total"
 RESPONSES_SUCCESS_TOTAL = "responses_success_total"

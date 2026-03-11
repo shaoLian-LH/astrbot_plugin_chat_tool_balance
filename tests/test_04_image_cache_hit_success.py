@@ -1,6 +1,6 @@
-from pipeline.contracts import NormalizedEvent
-from pipeline.stage_image_ocr import ImageOCRStage
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent
+from astrbot_plugin_chat_tool_balance.pipeline.stage_image_ocr import ImageOCRStage
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 def test_image_cache_hit_success(tmp_path):

@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from scheduler.summary_state_janitor import SummaryStateJanitor
-from services.llm_gateway import (
+from astrbot_plugin_chat_tool_balance.scheduler.summary_state_janitor import SummaryStateJanitor
+from astrbot_plugin_chat_tool_balance.services.llm_gateway import (
     CapabilityDecision,
     ChatSyncRequest,
     FallbackReasonCode,

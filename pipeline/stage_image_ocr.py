@@ -7,8 +7,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-from pipeline.contracts import ImageFacts, NormalizedEvent
-from storage.path_manager import StoragePathManager
+from .contracts import ImageFacts, NormalizedEvent
+from ..storage.path_manager import StoragePathManager
 
 ImageDescribeFn = Callable[[str, NormalizedEvent], tuple[str, dict[str, Any]]]
 

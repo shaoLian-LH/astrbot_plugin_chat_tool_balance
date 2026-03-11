@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
-from pipeline.contracts import (
+from .contracts import (
     ContextPacket,
     ImageFacts,
     NormalizedEvent,

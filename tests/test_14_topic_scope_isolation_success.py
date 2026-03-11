@@ -1,8 +1,8 @@
 import sqlite3
 
-from pipeline.contracts import NormalizedEvent
-from pipeline.stage_topic_router import TopicRouterStage
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent
+from astrbot_plugin_chat_tool_balance.pipeline.stage_topic_router import TopicRouterStage
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 def test_topic_scope_isolation_for_same_topic_id_success(tmp_path):

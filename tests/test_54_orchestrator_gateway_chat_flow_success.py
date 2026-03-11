@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
-from pipeline.contracts import NormalizedEvent
-from pipeline.orchestrator import ChatToolBalanceOrchestrator
-from plugin_config import load_plugin_settings
-from services.llm_gateway import FallbackReasonCode, GatewayResult
-from services.runtime_wiring import build_runtime_wiring
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent
+from astrbot_plugin_chat_tool_balance.pipeline.orchestrator import ChatToolBalanceOrchestrator
+from astrbot_plugin_chat_tool_balance.plugin_config import load_plugin_settings
+from astrbot_plugin_chat_tool_balance.services.llm_gateway import FallbackReasonCode, GatewayResult
+from astrbot_plugin_chat_tool_balance.services.runtime_wiring import build_runtime_wiring
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 class _FakeRuntimeContext:

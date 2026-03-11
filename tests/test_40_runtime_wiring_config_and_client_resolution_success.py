@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
-from plugin_config import ModelSettings
-from services.runtime_wiring import (
+from astrbot_plugin_chat_tool_balance.plugin_config import ModelSettings
+from astrbot_plugin_chat_tool_balance.services.runtime_wiring import (
     build_gateway_model_name_resolver,
     build_livingmemory_client_getter,
     extract_raw_plugin_config,

@@ -4,7 +4,7 @@ import os
 from dataclasses import dataclass
 from typing import Any
 
-from services.llm_gateway.contracts import FallbackReasonCode
+from .contracts import FallbackReasonCode
 
 
 @dataclass(frozen=True)

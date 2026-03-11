@@ -4,8 +4,8 @@ import sqlite3
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
-from pipeline.contracts import NormalizedEvent, TopicAssignment
-from storage.path_manager import StoragePathManager
+from ..pipeline.contracts import NormalizedEvent, TopicAssignment
+from ..storage.path_manager import StoragePathManager
 
 
 @dataclass(frozen=True)

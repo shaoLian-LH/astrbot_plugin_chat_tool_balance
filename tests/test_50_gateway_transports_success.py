@@ -7,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from services.llm_gateway import (
+from astrbot_plugin_chat_tool_balance.services.llm_gateway import (
     AstrBotTransport,
     AstrBotTransportError,
     AstrBotTransportRequest,

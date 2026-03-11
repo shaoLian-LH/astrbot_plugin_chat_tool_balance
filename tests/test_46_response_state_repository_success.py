@@ -1,5 +1,5 @@
-from storage.bootstrap import initialize_storage
-from storage.response_state_repository import ResponseStateRepository
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.storage.response_state_repository import ResponseStateRepository
 
 
 def _build_repository(tmp_path) -> ResponseStateRepository:

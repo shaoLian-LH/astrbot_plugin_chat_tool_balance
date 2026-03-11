@@ -8,8 +8,8 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - fallback for local unit tests.
     astrbot_logger = logging.getLogger(__name__)
 
-from services.llm_gateway.observability import GatewayMetricsRecorder
-from storage.response_state_repository import ResponseStateRepository
+from ..services.llm_gateway.observability import GatewayMetricsRecorder
+from ..storage.response_state_repository import ResponseStateRepository
 
 
 class SummaryStateJanitor:

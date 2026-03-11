@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
-from pipeline.contracts import NormalizedEvent, TopicAssignment
-from scheduler.summary_scheduler import SummaryScheduler
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent, TopicAssignment
+from astrbot_plugin_chat_tool_balance.scheduler.summary_scheduler import SummaryScheduler
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 def test_summary_trigger_counter_and_silence_dedup_success(tmp_path):

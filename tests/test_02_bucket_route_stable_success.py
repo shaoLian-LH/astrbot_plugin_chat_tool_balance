@@ -1,4 +1,4 @@
-from storage.path_manager import StoragePathManager
+from astrbot_plugin_chat_tool_balance.storage.path_manager import StoragePathManager
 
 
 def test_bucket_route_stable_success(tmp_path):

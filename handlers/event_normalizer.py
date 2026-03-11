@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import uuid4
 
-from pipeline.contracts import NormalizedEvent
+from ..pipeline.contracts import NormalizedEvent
 
 
 def normalize_event(event: Any) -> NormalizedEvent:

@@ -5,9 +5,9 @@ import sqlite3
 import uuid
 from collections.abc import Callable
 
-from pipeline.contracts import NormalizedEvent, TopicAssignment
-from pipeline.stage_short_memory import ShortMemoryStage
-from storage.path_manager import StoragePathManager
+from .contracts import NormalizedEvent, TopicAssignment
+from .stage_short_memory import ShortMemoryStage
+from ..storage.path_manager import StoragePathManager
 
 TopicClassifier = Callable[[NormalizedEvent, str], tuple[str | None, float] | str | None]
 

@@ -180,8 +180,8 @@ def _collect_short_memory_contents(path_manager) -> list[str]:
 
 def test_main_initialize_summary_wiring_and_sync_flow_success(tmp_path, monkeypatch):
     _install_fake_astrbot_modules(monkeypatch)
-    sys.modules.pop("main", None)
-    main_module = importlib.import_module("main")
+    sys.modules.pop("astrbot_plugin_chat_tool_balance.main", None)
+    main_module = importlib.import_module("astrbot_plugin_chat_tool_balance.main")
 
     base_dir = str(tmp_path / "plugin_data")
     context = _FakeContext(
@@ -263,8 +263,8 @@ def test_main_initialize_summary_wiring_and_sync_flow_success(tmp_path, monkeypa
 
 def test_main_image_only_message_enter_pipeline_success(tmp_path, monkeypatch):
     _install_fake_astrbot_modules(monkeypatch)
-    sys.modules.pop("main", None)
-    main_module = importlib.import_module("main")
+    sys.modules.pop("astrbot_plugin_chat_tool_balance.main", None)
+    main_module = importlib.import_module("astrbot_plugin_chat_tool_balance.main")
 
     base_dir = str(tmp_path / "plugin_data")
     context = _FakeContext(
@@ -299,8 +299,8 @@ def test_main_image_only_message_enter_pipeline_success(tmp_path, monkeypatch):
 
 def test_main_skip_bot_event_avoid_self_loop_success(tmp_path, monkeypatch):
     _install_fake_astrbot_modules(monkeypatch)
-    sys.modules.pop("main", None)
-    main_module = importlib.import_module("main")
+    sys.modules.pop("astrbot_plugin_chat_tool_balance.main", None)
+    main_module = importlib.import_module("astrbot_plugin_chat_tool_balance.main")
 
     base_dir = str(tmp_path / "plugin_data")
     context = _FakeContext(

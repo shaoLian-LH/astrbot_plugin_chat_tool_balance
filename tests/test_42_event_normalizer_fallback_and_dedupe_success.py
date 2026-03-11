@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from handlers.event_normalizer import is_status_command_message, normalize_event
+from astrbot_plugin_chat_tool_balance.handlers.event_normalizer import is_status_command_message, normalize_event
 
 
 class _ImageMessagePart:

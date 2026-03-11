@@ -11,18 +11,18 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - fallback for local unit tests.
     astrbot_logger = logging.getLogger(__name__)
 
-from services.llm_gateway.astrbot_transport import AstrBotTransport, AstrBotTransportRequest
-from services.llm_gateway.capability_router import CapabilityRouter
-from services.llm_gateway.contracts import (
+from .astrbot_transport import AstrBotTransport, AstrBotTransportRequest
+from .capability_router import CapabilityRouter
+from .contracts import (
     ChatSyncRequest,
     ChatSyncResult,
     FallbackReasonCode,
     GenerateSyncRequest,
     GenerateSyncResult,
 )
-from services.llm_gateway.observability import GatewayMetricsRecorder
-from services.llm_gateway.provider_resolver import ProviderResolver
-from services.llm_gateway.responses_transport import ResponsesTransport, ResponsesTransportError, ResponsesTransportRequest
+from .observability import GatewayMetricsRecorder
+from .provider_resolver import ProviderResolver
+from .responses_transport import ResponsesTransport, ResponsesTransportError, ResponsesTransportRequest
 
 
 class ResponseStateRepositoryProtocol(Protocol):

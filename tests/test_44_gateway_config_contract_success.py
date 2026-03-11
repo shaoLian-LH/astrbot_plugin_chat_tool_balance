@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from plugin_config import load_plugin_settings
+from astrbot_plugin_chat_tool_balance.plugin_config import load_plugin_settings
 
 
 def test_gateway_feature_toggle_default_and_legacy_compat_success():

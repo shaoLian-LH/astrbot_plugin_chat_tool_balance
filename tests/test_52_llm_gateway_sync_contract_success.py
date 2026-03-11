@@ -4,7 +4,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any
 
-from services.llm_gateway import (
+from astrbot_plugin_chat_tool_balance.services.llm_gateway import (
     CapabilityDecision,
     ChatSyncRequest,
     FallbackReasonCode,

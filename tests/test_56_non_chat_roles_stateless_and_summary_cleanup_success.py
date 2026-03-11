@@ -4,8 +4,8 @@ import sqlite3
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
-from pipeline.contracts import NormalizedEvent, TopicAssignment
-from services.runtime_wiring import build_runtime_wiring
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent, TopicAssignment
+from astrbot_plugin_chat_tool_balance.services.runtime_wiring import build_runtime_wiring
 
 
 class _StableLivingMemoryClient:

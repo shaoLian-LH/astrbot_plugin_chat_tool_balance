@@ -3,13 +3,13 @@ from types import SimpleNamespace
 
 import pytest
 
-from services.llm_gateway import (
+from astrbot_plugin_chat_tool_balance.services.llm_gateway import (
     CapabilityRouter,
     FallbackReasonCode,
     ProviderResolutionError,
     ProviderResolver,
 )
-from services.llm_gateway.capability_router import map_probe_error_to_reason_code
+from astrbot_plugin_chat_tool_balance.services.llm_gateway.capability_router import map_probe_error_to_reason_code
 
 
 class _RuntimeProviderContext:

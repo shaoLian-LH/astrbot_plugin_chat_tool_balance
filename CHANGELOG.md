@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.1] - 2026-03-11
+
+### Fixed
+
+- 修复插件包化加载场景下的模块导入链路，统一使用包内相对导入（如 `.handlers...`、`..pipeline...`）。
+- 修复桥接模块路径回归问题，`LivingMemory v2 bridge` 恢复至 `bridge/` 并更新全量引用。
+
+### Changed
+
+- 测试导入路径统一为 `astrbot_plugin_chat_tool_balance.*`，并调整 `pytest` 路径配置以匹配包结构。
+
 ## [0.4.0] - 2026-03-11
 
 ### Fixed
@@ -10,8 +21,9 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
-- 将 LivingMemory v2 bridge 实现迁移到 `handlers/bridge/`，并同步更新运行时代码与测试引用路径。
-- 移除旧 `bridge/` 目录，统一桥接实现入口为 `handlers.bridge`。
+- 将包内模块引用统一改为相对导入（如 `.handlers...`、`..pipeline...`），避免依赖顶层路径注入。
+- LivingMemory v2 bridge 回迁至 `bridge/`，并同步更新运行时代码与测试引用路径。
+- 测试导入路径统一切换到包名 `astrbot_plugin_chat_tool_balance.*`。
 
 ## [0.3.0] - 2026-03-11
 

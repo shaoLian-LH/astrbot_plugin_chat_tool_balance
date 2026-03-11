@@ -156,8 +156,8 @@ async def _collect_async(generator) -> list[str]:
 
 def test_main_decorator_binding_contract_success(monkeypatch):
     _install_fake_astrbot_modules(monkeypatch)
-    sys.modules.pop("main", None)
-    main_module = importlib.import_module("main")
+    sys.modules.pop("astrbot_plugin_chat_tool_balance.main", None)
+    main_module = importlib.import_module("astrbot_plugin_chat_tool_balance.main")
 
     assert getattr(main_module.ChatToolBalancePlugin.ctb_status, "_fake_command_name", "") == "ctb_status"
     assert getattr(main_module.ChatToolBalancePlugin.on_event_message, "_fake_event_message_type", "") == "all"
@@ -168,8 +168,8 @@ def test_main_decorator_binding_contract_success(monkeypatch):
 
 def test_main_ctb_status_and_normalized_fields_contract_success(tmp_path, monkeypatch):
     _install_fake_astrbot_modules(monkeypatch)
-    sys.modules.pop("main", None)
-    main_module = importlib.import_module("main")
+    sys.modules.pop("astrbot_plugin_chat_tool_balance.main", None)
+    main_module = importlib.import_module("astrbot_plugin_chat_tool_balance.main")
 
     context = _FakeContext(
         config={

@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from typing import Any
 from collections.abc import Callable
 
-from services.llm_gateway.contracts import FallbackReasonCode
+from .contracts import FallbackReasonCode
 
 
 @dataclass(frozen=True)

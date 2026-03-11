@@ -4,8 +4,8 @@ from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
 from typing import Any
 
-from services.llm_gateway.client_factory import ResponsesClientFactory
-from services.llm_gateway.contracts import FallbackReasonCode, GatewayResult
+from .client_factory import ResponsesClientFactory
+from .contracts import FallbackReasonCode, GatewayResult
 
 
 @dataclass(frozen=True)

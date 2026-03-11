@@ -6,8 +6,8 @@ import logging
 import sqlite3
 from collections.abc import Callable
 
-from pipeline.contracts import ImageFacts, NormalizedEvent, ShortMemoryRecord, TopicAssignment
-from storage.path_manager import StoragePathManager
+from .contracts import ImageFacts, NormalizedEvent, ShortMemoryRecord, TopicAssignment
+from ..storage.path_manager import StoragePathManager
 
 try:
     from astrbot.api import logger

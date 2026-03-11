@@ -3,23 +3,23 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from pipeline.contracts import (
+from .contracts import (
     ContextPacket,
     ImageFacts,
     NormalizedEvent,
     OrchestratorReply,
     ToolIntentDecision,
 )
-from pipeline.stage_context_builder import ContextBuilderStage
-from pipeline.stage_image_ocr import ImageOCRStage
-from pipeline.stage_short_memory import ShortMemoryStage
-from pipeline.stage_tool_intent import ToolIntentStage
-from pipeline.stage_topic_router import TopicRouterStage
-from plugin_config import PluginSettings
-from scheduler.summary_executor import SummaryExecutor
-from scheduler.summary_scheduler import SummaryJobRecord, SummaryScheduler
-from services.llm_gateway import ChatSyncRequest, LLMGateway
-from storage.path_manager import StoragePathManager
+from .stage_context_builder import ContextBuilderStage
+from .stage_image_ocr import ImageOCRStage
+from .stage_short_memory import ShortMemoryStage
+from .stage_tool_intent import ToolIntentStage
+from .stage_topic_router import TopicRouterStage
+from ..plugin_config import PluginSettings
+from ..scheduler.summary_executor import SummaryExecutor
+from ..scheduler.summary_scheduler import SummaryJobRecord, SummaryScheduler
+from ..services.llm_gateway import ChatSyncRequest, LLMGateway
+from ..storage.path_manager import StoragePathManager
 
 ToolExecutor = Callable[[NormalizedEvent, str], str]
 ChatResponder = Callable[[ContextPacket], str]

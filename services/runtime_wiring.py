@@ -11,13 +11,13 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - fallback for local unit tests.
     logger = logging.getLogger(__name__)
 
-from handlers.bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
-from pipeline.contracts import NormalizedEvent, ShortMemoryRecord
-from pipeline.orchestrator import ChatToolBalanceOrchestrator
-from plugin_config import ModelSettings, PluginSettings, load_plugin_settings
-from scheduler.summary_executor import SummaryExecutor
-from scheduler.summary_state_janitor import SummaryStateJanitor
-from services.llm_gateway import (
+from ..bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
+from ..pipeline.contracts import NormalizedEvent, ShortMemoryRecord
+from ..pipeline.orchestrator import ChatToolBalanceOrchestrator
+from ..plugin_config import ModelSettings, PluginSettings, load_plugin_settings
+from ..scheduler.summary_executor import SummaryExecutor
+from ..scheduler.summary_state_janitor import SummaryStateJanitor
+from .llm_gateway import (
     AstrBotTransport,
     CapabilityRouter,
     GenerateSyncRequest,
@@ -27,9 +27,9 @@ from services.llm_gateway import (
     ProviderResolver,
     ResponsesTransport,
 )
-from storage import ResponseStateRepository
-from storage.bootstrap import StorageBootstrapResult, initialize_storage
-from storage.path_manager import StoragePathManager
+from ..storage import ResponseStateRepository
+from ..storage.bootstrap import StorageBootstrapResult, initialize_storage
+from ..storage.path_manager import StoragePathManager
 
 
 @dataclass(frozen=True)

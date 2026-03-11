@@ -1,9 +1,9 @@
 import sqlite3
 
-from pipeline.contracts import NormalizedEvent, TopicAssignment
-from pipeline.stage_short_memory import ShortMemoryStage
-from pipeline.stage_topic_router import TopicRouterStage
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent, TopicAssignment
+from astrbot_plugin_chat_tool_balance.pipeline.stage_short_memory import ShortMemoryStage
+from astrbot_plugin_chat_tool_balance.pipeline.stage_topic_router import TopicRouterStage
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 def test_topic_router_rule_fallback_success(tmp_path):

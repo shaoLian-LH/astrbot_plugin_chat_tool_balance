@@ -1,13 +1,13 @@
 import json
 from dataclasses import asdict
 
-from pipeline.contracts import NormalizedEvent
-from pipeline.stage_context_builder import ContextBuilderStage
-from pipeline.stage_image_ocr import ImageOCRStage
-from pipeline.stage_short_memory import ShortMemoryStage
-from pipeline.stage_tool_intent import ToolIntentStage
-from pipeline.stage_topic_router import TopicRouterStage
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent
+from astrbot_plugin_chat_tool_balance.pipeline.stage_context_builder import ContextBuilderStage
+from astrbot_plugin_chat_tool_balance.pipeline.stage_image_ocr import ImageOCRStage
+from astrbot_plugin_chat_tool_balance.pipeline.stage_short_memory import ShortMemoryStage
+from astrbot_plugin_chat_tool_balance.pipeline.stage_tool_intent import ToolIntentStage
+from astrbot_plugin_chat_tool_balance.pipeline.stage_topic_router import TopicRouterStage
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 def test_pipeline_chain_to_context_success(tmp_path):

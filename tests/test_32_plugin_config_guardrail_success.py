@@ -1,9 +1,9 @@
-from plugin_config import (
+from astrbot_plugin_chat_tool_balance.plugin_config import (
     DEFAULT_NON_BOT_TRIGGER,
     DEFAULT_SILENCE_TRIGGER_MINUTES,
     load_plugin_settings,
 )
-from storage.path_manager import DEFAULT_BASE_DIR, DEFAULT_BUCKET_COUNT
+from astrbot_plugin_chat_tool_balance.storage.path_manager import DEFAULT_BASE_DIR, DEFAULT_BUCKET_COUNT
 
 
 def test_plugin_config_invalid_values_fallback_success():

@@ -1,4 +1,4 @@
-"""Bridge utilities scoped under handlers package."""
+"""Bridge package for external integrations."""
 
 from .livingmemory_v2_bridge import BridgeCallResult, LivingMemoryV2Bridge
 

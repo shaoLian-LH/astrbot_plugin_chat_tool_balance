@@ -1,6 +1,6 @@
 import sqlite3
 
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 def _table_exists(conn: sqlite3.Connection, table_name: str) -> bool:

@@ -1,8 +1,8 @@
 import pytest
 
-from pipeline.contracts import NormalizedEvent, TopicAssignment
-from pipeline.stage_short_memory import ShortMemoryStage
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent, TopicAssignment
+from astrbot_plugin_chat_tool_balance.pipeline.stage_short_memory import ShortMemoryStage
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 def test_short_memory_vec_real_query_success(tmp_path):

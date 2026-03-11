@@ -3,11 +3,11 @@ from __future__ import annotations
 import sqlite3
 from datetime import datetime, timedelta, timezone
 
-from handlers.bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
-from pipeline.contracts import NormalizedEvent, TopicAssignment
-from pipeline.stage_short_memory import ShortMemoryStage
-from scheduler.summary_executor import SummaryExecutor
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent, TopicAssignment
+from astrbot_plugin_chat_tool_balance.pipeline.stage_short_memory import ShortMemoryStage
+from astrbot_plugin_chat_tool_balance.scheduler.summary_executor import SummaryExecutor
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 class _StableLivingMemoryClient:

@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import sqlite3
 
-from handlers.bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
-from pipeline.contracts import NormalizedEvent
-from pipeline.orchestrator import ChatToolBalanceOrchestrator
-from plugin_config import load_plugin_settings
-from scheduler.summary_executor import SummaryExecutor
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent
+from astrbot_plugin_chat_tool_balance.pipeline.orchestrator import ChatToolBalanceOrchestrator
+from astrbot_plugin_chat_tool_balance.plugin_config import load_plugin_settings
+from astrbot_plugin_chat_tool_balance.scheduler.summary_executor import SummaryExecutor
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 def test_summary_enabled_false_skip_scheduler_and_executor_success(tmp_path):

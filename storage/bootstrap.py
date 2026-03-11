@@ -4,7 +4,7 @@ import sqlite3
 from dataclasses import dataclass
 from pathlib import Path
 
-from storage.path_manager import StoragePathManager
+from .path_manager import StoragePathManager
 
 SCHEMA_VERSION = 4
 

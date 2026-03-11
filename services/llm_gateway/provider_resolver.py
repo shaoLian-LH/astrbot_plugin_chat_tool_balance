@@ -7,7 +7,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any
 
-from services.llm_gateway.contracts import ProviderRole
+from .contracts import ProviderRole
 
 
 @dataclass(frozen=True)

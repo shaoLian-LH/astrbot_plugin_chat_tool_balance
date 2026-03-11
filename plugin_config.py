@@ -10,7 +10,7 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - fallback for local unit tests.
     logger = logging.getLogger(__name__)
 
-from storage.path_manager import DEFAULT_BASE_DIR, DEFAULT_BUCKET_COUNT
+from .storage.path_manager import DEFAULT_BASE_DIR, DEFAULT_BUCKET_COUNT
 
 DEFAULT_NON_BOT_TRIGGER = 20
 DEFAULT_SILENCE_TRIGGER_MINUTES = 60

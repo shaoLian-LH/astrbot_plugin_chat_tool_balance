@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pipeline.contracts import NormalizedEvent
-from pipeline.orchestrator import ChatToolBalanceOrchestrator
-from plugin_config import load_plugin_settings
-from storage.bootstrap import initialize_storage
+from astrbot_plugin_chat_tool_balance.pipeline.contracts import NormalizedEvent
+from astrbot_plugin_chat_tool_balance.pipeline.orchestrator import ChatToolBalanceOrchestrator
+from astrbot_plugin_chat_tool_balance.plugin_config import load_plugin_settings
+from astrbot_plugin_chat_tool_balance.storage.bootstrap import initialize_storage
 
 
 def test_orchestrator_tool_first_reply_success(tmp_path):

@@ -1,4 +1,4 @@
-from storage.path_manager import StoragePathManager
+from astrbot_plugin_chat_tool_balance.storage.path_manager import StoragePathManager
 
 
 def test_path_init_success(tmp_path):
