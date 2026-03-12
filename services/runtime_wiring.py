@@ -49,6 +49,12 @@ def build_runtime_wiring(context: Any, plugin: Any) -> RuntimeWiringResult:
         base_dir=settings.storage.base_dir,
         bucket_count=settings.storage.bucket_count,
     )
+    logger.info(
+        "chat_tool_balance wiring: base_dir=%s bucket_count=%s summary_enabled=%s",
+        settings.storage.base_dir,
+        settings.storage.bucket_count,
+        settings.summary.enabled,
+    )
     path_manager = storage_bootstrap.path_manager
     llm_gateway = build_llm_gateway(
         settings=settings,
@@ -141,6 +147,7 @@ def wire_non_chat_gateway_paths(orchestrator: ChatToolBalanceOrchestrator, llm_g
         llm_gateway=llm_gateway
     )
     orchestrator.topic_router_stage.classifier = build_topic_gateway_classifier(llm_gateway=llm_gateway)
+    logger.info("chat_tool_balance wiring: non-chat gateway paths ready")
 
 
 def build_ocr_gateway_describer(

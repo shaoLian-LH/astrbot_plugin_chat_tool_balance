@@ -62,14 +62,35 @@ class ChatToolBalancePlugin(Star):
     @filter.event_message_type(filter.EventMessageType.ALL)
     async def on_event_message(self, event: AstrMessageEvent):
         if self.orchestrator is None:
+            logger.warning("chat_tool_balance skip event: orchestrator not initialized")
             return
 
         normalized_event = normalize_event(event)
+        logger.info(
+            "chat_tool_balance event received: message_id=%s scope_id=%s session_id=%s text_len=%s image_count=%s",
+            normalized_event.message_id,
+            normalized_event.scope_id,
+            normalized_event.session_id,
+            len(normalized_event.text.strip()),
+            len(normalized_event.image_urls),
+        )
         if normalized_event.is_bot:
+            logger.info(
+                "chat_tool_balance skip event: message_id=%s reason=bot_message",
+                normalized_event.message_id,
+            )
             return
         if not normalized_event.text and not normalized_event.image_urls:
+            logger.info(
+                "chat_tool_balance skip event: message_id=%s reason=empty_payload",
+                normalized_event.message_id,
+            )
             return
         if is_status_command_message(normalized_event.text):
+            logger.info(
+                "chat_tool_balance skip event: message_id=%s reason=status_command",
+                normalized_event.message_id,
+            )
             return
 
         try:
@@ -85,11 +106,27 @@ class ChatToolBalancePlugin(Star):
             )
             return
         except Exception as exc:
-            logger.error("chat_tool_balance message handling failed: %s", exc)
+            logger.error(
+                "chat_tool_balance message handling failed: message_id=%s err=%s",
+                normalized_event.message_id,
+                exc,
+            )
             return
 
+        logger.info(
+            "chat_tool_balance event handled: message_id=%s route=%s topic_id=%s fallback=%s metadata=%s",
+            normalized_event.message_id,
+            getattr(reply, "route", ""),
+            getattr(reply, "topic_id", ""),
+            getattr(reply, "fallback_used", False),
+            getattr(reply, "metadata", {}),
+        )
         reply_text = (reply.reply_text or "").strip()
         if not reply_text:
+            logger.info(
+                "chat_tool_balance skip reply: message_id=%s reason=empty_reply_text",
+                normalized_event.message_id,
+            )
             return
         yield event.plain_result(reply_text)
 

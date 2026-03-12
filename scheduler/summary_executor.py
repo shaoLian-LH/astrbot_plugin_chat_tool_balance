@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 import json
+import logging
 import sqlite3
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import Protocol
+
+try:
+    from astrbot.api import logger
+except ModuleNotFoundError:  # pragma: no cover - fallback for local unit tests.
+    logger = logging.getLogger(__name__)
 
 from ..bridge.livingmemory_v2_bridge import LivingMemoryV2Bridge
 from ..pipeline.contracts import ShortMemoryRecord
@@ -80,9 +86,21 @@ class SummaryExecutor:
         scope_id = str(job_row[1])
         topic_id = str(job_row[2])
         retry_count = int(job_row[4]) if job_row[4] is not None else 0
+        logger.info(
+            "ctb_summary execute start: job_id=%s scope_id=%s topic_id=%s retry_count=%s",
+            int(job_id),
+            scope_id,
+            topic_id,
+            retry_count,
+        )
 
         messages = self._load_recent_topic_messages(scope_id=scope_id, topic_id=topic_id)
         source_window = _build_source_window(messages)
+        logger.info(
+            "ctb_summary source loaded: job_id=%s message_count=%s",
+            int(job_id),
+            len(messages),
+        )
 
         try:
             summary_text, quality = self.summary_generator(messages, self.summary_model_name)
@@ -103,6 +121,14 @@ class SummaryExecutor:
                     (retry_count + 1, next_retry_at, str(exc), now_iso, int(job_id)),
                 )
                 conn.commit()
+            logger.warning(
+                "ctb_summary execute failed: job_id=%s scope_id=%s topic_id=%s err=%s next_retry_at=%s",
+                int(job_id),
+                scope_id,
+                topic_id,
+                exc,
+                next_retry_at,
+            )
             return SummaryExecutionResult(
                 job_id=int(job_id),
                 result_id=None,
@@ -162,6 +188,14 @@ class SummaryExecutor:
                 )
                 conn.commit()
             self._cleanup_response_state(scope_id=scope_id, topic_id=topic_id)
+            logger.info(
+                "ctb_summary execute success: job_id=%s result_id=%s scope_id=%s topic_id=%s quality=%.3f",
+                int(job_id),
+                int(result_id),
+                scope_id,
+                topic_id,
+                quality_value,
+            )
             return SummaryExecutionResult(
                 job_id=int(job_id),
                 result_id=int(result_id),
@@ -202,6 +236,15 @@ class SummaryExecutor:
                 now_iso=now_iso,
             )
             conn.commit()
+        logger.warning(
+            "ctb_summary sync pending: job_id=%s result_id=%s scope_id=%s topic_id=%s err=%s next_retry_at=%s",
+            int(job_id),
+            int(result_id),
+            scope_id,
+            topic_id,
+            sync_error,
+            next_retry_at,
+        )
         return SummaryExecutionResult(
             job_id=int(job_id),
             result_id=int(result_id),
@@ -232,6 +275,12 @@ class SummaryExecutor:
             executed = self.execute_job(int(row[0]), now=now_dt)
             if executed is not None:
                 results.append(executed)
+        if results:
+            logger.info(
+                "ctb_summary retry_failed_jobs done: retried=%s completed=%s",
+                len(rows),
+                len(results),
+            )
         return tuple(results)
 
     def retry_pending_sync(self, now: datetime | None = None, limit: int = 20) -> int:
@@ -309,6 +358,13 @@ class SummaryExecutor:
                     )
                     synced_count += 1
                     cleanup_after_commit = True
+                    logger.info(
+                        "ctb_summary retry_sync success: job_id=%s result_id=%s scope_id=%s topic_id=%s",
+                        int(job_id),
+                        int(result_id),
+                        scope_id,
+                        topic_id,
+                    )
                 else:
                     retry_value = int(retry_count) + 1
                     next_retry_at = self._next_retry_at(now_dt, retry_value)
@@ -341,6 +397,15 @@ class SummaryExecutor:
                         detail=sync_error,
                         now_iso=now_iso,
                     )
+                    logger.warning(
+                        "ctb_summary retry_sync pending: job_id=%s result_id=%s scope_id=%s topic_id=%s err=%s next_retry_at=%s",
+                        int(job_id),
+                        int(result_id),
+                        scope_id,
+                        topic_id,
+                        sync_error,
+                        next_retry_at,
+                    )
                 conn.commit()
             if cleanup_after_commit:
                 self._cleanup_response_state(
@@ -348,6 +413,8 @@ class SummaryExecutor:
                     topic_id=str(topic_id),
                 )
 
+        if synced_count:
+            logger.info("ctb_summary retry_pending_sync done: synced=%s", synced_count)
         return synced_count
 
     def _upsert_summary_result(
@@ -481,11 +548,23 @@ class SummaryExecutor:
         if self.summary_state_janitor is None:
             return
         try:
-            self.summary_state_janitor.delete_by_scope_topic(
+            deleted_count = self.summary_state_janitor.delete_by_scope_topic(
                 scope_id=scope_id,
                 topic_id=topic_id,
             )
-        except Exception:
+            logger.info(
+                "ctb_summary cleanup response_state: scope_id=%s topic_id=%s deleted=%s",
+                scope_id,
+                topic_id,
+                deleted_count,
+            )
+        except Exception as exc:
+            logger.warning(
+                "ctb_summary cleanup response_state failed: scope_id=%s topic_id=%s err=%s",
+                scope_id,
+                topic_id,
+                exc,
+            )
             return
 
     @staticmethod

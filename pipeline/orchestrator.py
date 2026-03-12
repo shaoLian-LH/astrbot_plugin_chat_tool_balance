@@ -1,7 +1,13 @@
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
 from dataclasses import dataclass
+
+try:
+    from astrbot.api import logger
+except ModuleNotFoundError:  # pragma: no cover - fallback for local unit tests.
+    logger = logging.getLogger(__name__)
 
 from .contracts import (
     ContextPacket,
@@ -79,8 +85,24 @@ class ChatToolBalanceOrchestrator:
         )
 
     def handle_event(self, event: NormalizedEvent, event_context: object = None) -> OrchestratorReply:
+        logger.info(
+            "ctb_orchestrator start: message_id=%s scope_id=%s session_id=%s text_len=%s image_count=%s",
+            event.message_id,
+            event.scope_id,
+            event.session_id,
+            len(event.text.strip()),
+            len(event.image_urls),
+        )
         image_facts = self.image_stage.process(event)
         tool_intent = self.tool_intent_stage.process(event, image_facts=image_facts)
+        logger.info(
+            "ctb_orchestrator tool_intent: message_id=%s route=%s confidence=%.3f reason=%s model=%s",
+            event.message_id,
+            tool_intent.route,
+            tool_intent.confidence,
+            tool_intent.reason_code,
+            tool_intent.model_name,
+        )
         tool_reply = ""
         tool_error = ""
 
@@ -103,7 +125,20 @@ class ChatToolBalanceOrchestrator:
                 if self.summary_executor is not None
                 else 0
             )
+            logger.info(
+                "ctb_orchestrator summary: message_id=%s scheduled=%s executed=%s sync_retry_success=%s",
+                event.message_id,
+                len(summary_jobs),
+                executed_jobs,
+                synced_jobs,
+            )
         if tool_intent.hit and tool_reply:
+            logger.info(
+                "ctb_orchestrator routed: message_id=%s route=tool topic_id=%s reply_len=%s",
+                event.message_id,
+                context_packet.topic.topic_id,
+                len(tool_reply),
+            )
             return OrchestratorReply(
                 message_id=event.message_id,
                 route="tool",
@@ -123,6 +158,15 @@ class ChatToolBalanceOrchestrator:
         reply_text, transport_used, fallback_reason_code = self._generate_chat_reply(
             context_packet=context_packet,
             event_context=event_context,
+        )
+        logger.info(
+            "ctb_orchestrator routed: message_id=%s route=chat topic_id=%s transport=%s reply_len=%s tool_fallback=%s fallback_reason=%s",
+            event.message_id,
+            context_packet.topic.topic_id,
+            transport_used,
+            len(reply_text),
+            tool_intent.hit,
+            fallback_reason_code,
         )
         return OrchestratorReply(
             message_id=event.message_id,
@@ -157,6 +201,14 @@ class ChatToolBalanceOrchestrator:
             scope_id=event.scope_id,
             topic_id=topic_assignment.topic_id,
         )
+        logger.info(
+            "ctb_orchestrator context: message_id=%s topic_id=%s topic_source=%s memory_size=%s image_fact_count=%s",
+            event.message_id,
+            topic_assignment.topic_id,
+            topic_assignment.source,
+            len(short_memory),
+            len(image_facts),
+        )
         return self.context_builder_stage.build(
             event=event,
             topic=topic_assignment,
@@ -171,12 +223,28 @@ class ChatToolBalanceOrchestrator:
         tool_intent: ToolIntentDecision,
     ) -> tuple[str, str]:
         assert self.tool_executor is not None
+        logger.info(
+            "ctb_orchestrator tool_exec_start: message_id=%s reason=%s",
+            event.message_id,
+            tool_intent.reason_code,
+        )
         try:
             reply = (self.tool_executor(event, tool_intent.prompt_injection) or "").strip()
         except Exception as exc:
+            logger.warning(
+                "ctb_orchestrator tool_exec_error: message_id=%s err=%s",
+                event.message_id,
+                exc,
+            )
             return "", f"tool_exec_error:{exc}"
         if not reply:
+            logger.info("ctb_orchestrator tool_exec_empty: message_id=%s", event.message_id)
             return "", "tool_empty_result"
+        logger.info(
+            "ctb_orchestrator tool_exec_success: message_id=%s reply_len=%s",
+            event.message_id,
+            len(reply),
+        )
         return reply, ""
 
     def _generate_chat_reply(
@@ -187,6 +255,10 @@ class ChatToolBalanceOrchestrator:
         assert self.chat_responder is not None
 
         if self.llm_gateway is None:
+            logger.info(
+                "ctb_orchestrator chat_fallback: message_id=%s reason=gateway_unavailable",
+                context_packet.event.message_id,
+            )
             return self.chat_responder(context_packet), "fallback_chat", ""
 
         request = ChatSyncRequest(
@@ -200,12 +272,21 @@ class ChatToolBalanceOrchestrator:
         try:
             gateway_result = self.llm_gateway.chat_with_state_sync(request)
         except Exception as exc:
+            logger.warning(
+                "ctb_orchestrator chat_fallback: message_id=%s reason=gateway_error err=%s",
+                context_packet.event.message_id,
+                exc,
+            )
             fallback_text = (self.chat_responder(context_packet) or "").strip()
             return fallback_text, "fallback_chat", f"gateway_error:{exc}"
 
         reply_text = (gateway_result.text or "").strip()
         if not reply_text:
             reply_text = (self.chat_responder(context_packet) or "").strip()
+            logger.info(
+                "ctb_orchestrator chat_fallback: message_id=%s reason=empty_gateway_reply",
+                context_packet.event.message_id,
+            )
         fallback_reason_code = ""
         if gateway_result.fallback_reason_code is not None:
             fallback_reason_code = str(

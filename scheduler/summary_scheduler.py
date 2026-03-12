@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+import logging
 import sqlite3
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+
+try:
+    from astrbot.api import logger
+except ModuleNotFoundError:  # pragma: no cover - fallback for local unit tests.
+    logger = logging.getLogger(__name__)
 
 from ..pipeline.contracts import NormalizedEvent, TopicAssignment
 from ..storage.path_manager import StoragePathManager
@@ -61,6 +67,22 @@ class SummaryScheduler:
             dedupe_key=dedupe_key,
             now_iso=now_iso,
         )
+        if job is None:
+            logger.info(
+                "ctb_summary counter trigger deduped: scope_id=%s topic_id=%s count=%s dedupe_key=%s",
+                topic.scope_id,
+                topic.topic_id,
+                non_bot_count,
+                dedupe_key,
+            )
+        else:
+            logger.info(
+                "ctb_summary counter trigger created: job_id=%s scope_id=%s topic_id=%s count=%s",
+                job.id,
+                topic.scope_id,
+                topic.topic_id,
+                non_bot_count,
+            )
         return (job,) if job is not None else ()
 
     def poll_silence(
@@ -101,6 +123,20 @@ class SummaryScheduler:
             )
             if job is not None:
                 created_jobs.append(job)
+                logger.info(
+                    "ctb_summary silence trigger created: job_id=%s scope_id=%s topic_id=%s last_message_at=%s",
+                    job.id,
+                    scope_id,
+                    topic_id,
+                    last_message_at,
+                )
+            else:
+                logger.info(
+                    "ctb_summary silence trigger deduped: scope_id=%s topic_id=%s dedupe_key=%s",
+                    scope_id,
+                    topic_id,
+                    dedupe_key,
+                )
         return tuple(created_jobs)
 
     def _upsert_topic_activity(
